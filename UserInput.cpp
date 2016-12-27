@@ -19,15 +19,15 @@ Room::Room(Database*dbIn) {
 	for(int i = 0;i < Iterations;i++) {
 		generateSurfaces();
 		solve();
-		if(fabs(T - myScore) < fabs(T - Bests[0].Score)) {
+		if(myScore < Bests[0].Score) {
 			insertBest(0);
-		} else if(fabs(T - myScore) < fabs(T - Bests[1].Score)) {
+		} else if(myScore < Bests[1].Score) {
 			insertBest(1);
-		} else if(fabs(T - myScore) < fabs(T - Bests[2].Score)) {
+		} else if(myScore < Bests[2].Score) {
 			insertBest(2);
-		} else if(fabs(T - myScore) < fabs(T - Bests[3].Score)) {
+		} else if(myScore < Bests[3].Score) {
 			insertBest(3);
-		} else if(fabs(T - myScore) < fabs(T - Bests[4].Score)) {
+		} else if(myScore < Bests[4].Score) {
 			insertBest(4);
 		}
 
@@ -37,7 +37,7 @@ Room::Room(Database*dbIn) {
 		else if(i == Iterations*0.75) {cout << "75%" << endl;}
 		else if(i == Iterations*0.95) {cout << "95%" << endl;}
 	}
-	printResults(); //No results in Bests
+	printResults();
 }
 
 void Room::incorrectIn(int errReturn) {
@@ -405,7 +405,7 @@ void Room::getT() {
 void Room::printResults() {
 	cout << "Eredmények: " << endl << endl;
 	for(int i = 0;i < 5;i++) {
-		cout << i+1 << ".) " << Bests[i].Score << "   (" << Bests[i].Ts[0] << " " << Bests[i].Ts[1] << " " << Bests[i].Ts[2] << " " << Bests[i].Ts[3] << " " << Bests[i].Ts[4] << " " << Bests[i].Ts[5] << " " << Bests[i].Ts[6]  << ")" << endl; 
+		cout << i+1 << ".) " << (Bests[i].Ts[0]+Bests[i].Ts[1]+Bests[i].Ts[2]+Bests[i].Ts[3]+Bests[i].Ts[4]+Bests[i].Ts[5]+Bests[i].Ts[6])/7 << "   (" << Bests[i].Ts[0] << " " << Bests[i].Ts[1] << " " << Bests[i].Ts[2] << " " << Bests[i].Ts[3] << " " << Bests[i].Ts[4] << " " << Bests[i].Ts[5] << " " << Bests[i].Ts[6]  << ")" << endl; 
 	}
 	cout << endl;
 	cout << "Választott: ";

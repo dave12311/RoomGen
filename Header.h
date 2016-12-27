@@ -56,7 +56,7 @@ private:
 		vector<Data*> Floor, Wall, Ceiling;
 		vector<float> FloorSurf, WallSurf, CeilingSurf;
 		float Ts[7];
-		float Score;
+		float Score = 1000;
 	};
 
 	float myT[7];

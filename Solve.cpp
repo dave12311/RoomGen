@@ -1,9 +1,6 @@
 #include "Header.h"
 #include <algorithm>
 #include <math.h>
-//start
-#include <iostream>
-//end
 using namespace std;
 
 float rnd(float min, float max) { //100 = 0.01
@@ -104,9 +101,8 @@ void Room::solve() {
         AlphaS[t] += (S.SF - availableS.SF) * myFloor->A[t];
 
         myT[t] = (-0.163 * V) / (S.S * (log(1 - (AlphaS[t] / S.S))));
-        myScore += myT[t];
+        myScore += fabs(T - myT[t]);
     }
-    myScore = myScore / 7;
 }
 
 void Room::insertBest(int n) {
