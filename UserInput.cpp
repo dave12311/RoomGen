@@ -1,11 +1,12 @@
 #include "Header.h"
 #include "math.h"
 #include <iostream>
+#include <stdlib.h>
 
 using namespace std;
 
 void clr(){
-	cout << "\033[2J\033[1;1H";
+	system("cls");
 }
 
 Room::Room(Database*dbIn) {
@@ -44,7 +45,7 @@ void Room::incorrectIn(int errReturn) {
 
 	clr();
 
-	cout << endl << "Érvénytelen szám." << endl << endl;
+	cout << endl << "Ervenytelen szam." << endl << endl;
 
 	cin.clear();
 
@@ -94,15 +95,15 @@ void Room::init() {
 
 	float temp;
 
-	cout << "Magasság=";
+	cout << "Magassag=";
 
 	if (cin >> temp && temp > 0) {H = temp;} else {incorrectIn(0);}
 
-	cout << "\nSzélesség=";
+	cout << "\nSzelesseg=";
 
 	if (cin >> temp && temp > 0) {W = temp;} else {incorrectIn(0);}
 
-	cout << "\nHosszúság=";
+	cout << "\nHosszusag=";
 
 	if (cin >> temp && temp > 0) {D = temp;} else {incorrectIn(0);}
 
@@ -116,11 +117,11 @@ void Room::baseMaterialLister() {
 	int c;
 
 	//Padló
-	cout << "Padló:" << endl;
+	cout << "Padlo:" << endl;
 	for(int i = 0;i < myDB->BaseFloors.size();i++){
 		cout << i+1 << ".) " << myDB->BaseFloors[i].Name << endl;
 	}
-	cout << endl << "Választott: ";
+	cout << endl << "Valasztott: ";
 	if(cin>>c && c > 0 && c <= myDB->BaseFloors.size()){
 		myFloor = &myDB->BaseFloors[c-1];
 	}else{
@@ -135,7 +136,7 @@ void Room::baseMaterialLister() {
 	for(int i = 0;i < myDB->BaseWalls.size();i++){
 		cout << i+1 << ".) " << myDB->BaseWalls[i].Name << endl;
 	}
-	cout << endl << "Választott: ";
+	cout << endl << "Valasztott: ";
 	if(cin>>c && c > 0 && c <= myDB->BaseWalls.size()){
 		myWall = &myDB->BaseWalls[c-1];
 	}else{
@@ -150,7 +151,7 @@ void Room::baseMaterialLister() {
 	for(int i = 0;i < myDB->BaseCeilings.size();i++){
 		cout << i+1 << ".) " << myDB->BaseCeilings[i].Name << endl;
 	}
-	cout << endl << "Választott: ";
+	cout << endl << "Valasztott: ";
 	if(cin>>c && c > 0 && c <= myDB->BaseCeilings.size()){
 		myCeiling = &myDB->BaseCeilings[c-1];
 	}else{
@@ -166,89 +167,95 @@ void Room::fixedMaterialLister() {
 	float surf;
 
 	//Padló
-	while(true){
-		clr();
-		cout << "Fix anyagok felülettel:" << endl << endl;
-		cout << "Padló:" << endl;
-		for(int i = 0;i < myDB->FixedFloors.size();i++){
-			cout << i+1 << ".) " << myDB->FixedFloors[i].Name << endl;
-		}
-		cout << "0.) Tovább" << endl;
-		cout << "Választott: ";
-		if(cin>>c && c >= 0 && c <= myDB->FixedFloors.size()){
-			if(c==0){break;}
-			cout << "Felület (" << availableS.SF << " m^2 elérhető): ";
-			if(cin>>surf && surf > 0 && surf <= availableS.SF){
-				fixedFloor.push_back(&myDB->FixedFloors[c-1]);
-				fixedFloorS.push_back(surf);
-				availableS.SF -= surf;
-				availableS.S -= surf;
-				if(availableS.SF==0){break;}
+	if(myDB->FixedFloors.size() != 0){
+		while(true){
+			clr();
+			cout << "Fix anyagok felulettel:" << endl << endl;
+			cout << "Padlo:" << endl;
+			for(int i = 0;i < myDB->FixedFloors.size();i++){
+				cout << i+1 << ".) " << myDB->FixedFloors[i].Name << endl;
+			}
+			cout << "0.) Tovabb" << endl;
+			cout << "Valasztott: ";
+			if(cin>>c && c >= 0 && c <= myDB->FixedFloors.size()){
+				if(c==0){break;}
+				cout << "Felulet (" << availableS.SF << " m^2 elerheto): ";
+				if(cin>>surf && surf > 0 && surf <= availableS.SF){
+					fixedFloor.push_back(&myDB->FixedFloors[c-1]);
+					fixedFloorS.push_back(surf);
+					availableS.SF -= surf;
+					availableS.S -= surf;
+					if(availableS.SF==0){break;}
+				}else{
+					incorrectIn(2);
+				}
 			}else{
 				incorrectIn(2);
 			}
-		}else{
-			incorrectIn(2);
 		}
 	}
 
 	clr();
-	cout << "Fix anyagok felülettel:" << endl << endl;
+	cout << "Fix anyagok felulettel:" << endl << endl;
 
 	//Falak
+	if(myDB->FixedWalls.size() != 0){
 		while(true){
-		clr();
-		cout << "Fix anyagok felülettel:" << endl << endl;
-		cout << "Falak:" << endl;
-		for(int i = 0;i < myDB->FixedWalls.size();i++){
-			cout << i+1 << ".) " << myDB->FixedWalls[i].Name << endl;
-		}
-		cout << "0.) Tovább" << endl;
-		cout << "Választott: ";
-		if(cin>>c && c >= 0 && c <= myDB->FixedWalls.size()){
-			if(c==0){break;}
-			cout << "Felület (" << availableS.SW << " m^2 elérhető): ";
-			if(cin>>surf && surf > 0 && surf <= availableS.SW){
-				fixedFloor.push_back(&myDB->FixedWalls[c-1]);
-				fixedFloorS.push_back(surf);
-				availableS.SW -= surf;
-				availableS.S -= surf;
-				if(availableS.SW==0){break;}
+			clr();
+			cout << "Fix anyagok felulettel:" << endl << endl;
+			cout << "Falak:" << endl;
+			for(int i = 0;i < myDB->FixedWalls.size();i++){
+				cout << i+1 << ".) " << myDB->FixedWalls[i].Name << endl;
+			}
+			cout << "0.) Tovabb" << endl;
+			cout << "Valasztott: ";
+			if(cin>>c && c >= 0 && c <= myDB->FixedWalls.size()){
+				if(c==0){break;}
+				cout << "Felulet (" << availableS.SW << " m^2 elerheto): ";
+				if(cin>>surf && surf > 0 && surf <= availableS.SW){
+					fixedFloor.push_back(&myDB->FixedWalls[c-1]);
+					fixedFloorS.push_back(surf);
+					availableS.SW -= surf;
+					availableS.S -= surf;
+					if(availableS.SW==0){break;}
+				}else{
+					incorrectIn(2);
+				}
 			}else{
 				incorrectIn(2);
 			}
-		}else{
-			incorrectIn(2);
 		}
 	}
 
 	clr();
-	cout << "Fix anyagok felülettel:" << endl << endl;
+	cout << "Fix anyagok felulettel:" << endl << endl;
 
 	//Plafon
+	if(myDB->FixedCeilings.size() != 0){
 		while(true){
-		clr();
-		cout << "Fix anyagok felülettel:" << endl << endl;
-		cout << "Plafon:" << endl;
-		for(int i = 0;i < myDB->FixedCeilings.size();i++){
-			cout << i+1 << ".) " << myDB->FixedCeilings[i].Name << endl;
-		}
-		cout << "0.) Tovább" << endl;
-		cout << "Választott: ";
-		if(cin>>c && c >= 0 && c <= myDB->FixedCeilings.size()){
-			if(c==0){break;}
-			cout << "Felület (" << availableS.SC << " m^2 elérhető): ";
-			if(cin>>surf && surf > 0 && surf <= availableS.SC){
-				fixedFloor.push_back(&myDB->FixedCeilings[c-1]);
-				fixedFloorS.push_back(surf);
-				availableS.SC -= surf;
-				availableS.S -= surf;
-				if(availableS.SC==0){break;}
+			clr();
+			cout << "Fix anyagok felulettel:" << endl << endl;
+			cout << "Plafon:" << endl;
+			for(int i = 0;i < myDB->FixedCeilings.size();i++){
+				cout << i+1 << ".) " << myDB->FixedCeilings[i].Name << endl;
+			}
+			cout << "0.) Tovabb" << endl;
+			cout << "Valasztott: ";
+			if(cin>>c && c >= 0 && c <= myDB->FixedCeilings.size()){
+				if(c==0){break;}
+				cout << "Felulet (" << availableS.SC << " m^2 elerheto): ";
+				if(cin>>surf && surf > 0 && surf <= availableS.SC){
+					fixedFloor.push_back(&myDB->FixedCeilings[c-1]);
+					fixedFloorS.push_back(surf);
+					availableS.SC -= surf;
+					availableS.S -= surf;
+					if(availableS.SC==0){break;}
+				}else{
+					incorrectIn(2);
+				}
 			}else{
 				incorrectIn(2);
 			}
-		}else{
-			incorrectIn(2);
 		}
 	}
 
@@ -262,8 +269,8 @@ void Room::acousticMaterialLister() {
 
 	//Padló
 	while(true){
-		cout << "Lehetséges akusztikai elemek:" << endl << endl;
-		cout << "Padló:" << endl;
+		cout << "Lehetseges akusztikai elemek:" << endl << endl;
+		cout << "Padlo:" << endl;
 		for(int i = 0;i < myDB->AcousticFloors.size();i++){
 			cout << i+1 << ".) " << myDB->AcousticFloors[i].Name;
 			if(myAcousticFloors.size() == 0){
@@ -281,8 +288,8 @@ void Room::acousticMaterialLister() {
 				cout << endl;
 			}
 		}
-		cout << "0.) Tovább" << endl;
-		cout << "Választott: ";
+		cout << "0.) Tovabb" << endl;
+		cout << "Valasztott: ";
 		if(cin>>c && c >= 0 && c <= myDB->AcousticFloors.size()){
 			if(c==0){break;}
 			if(myAcousticFloors.size() == 0){
@@ -305,7 +312,7 @@ void Room::acousticMaterialLister() {
 	//Falak
 	while(true){
 		clr();
-		cout << "Lehetséges akusztikai elemek:" << endl << endl;
+		cout << "Lehetseges akusztikai elemek:" << endl << endl;
 		cout << "Falak:" << endl;
 		for(int i = 0;i < myDB->AcousticWalls.size();i++){
 			cout << i+1 << ".) " << myDB->AcousticWalls[i].Name;
@@ -324,8 +331,8 @@ void Room::acousticMaterialLister() {
 				cout << endl;
 			}
 		}
-		cout << "0.) Tovább" << endl;
-		cout << "Választott: ";
+		cout << "0.) Tovabb" << endl;
+		cout << "Valasztott: ";
 		if(cin>>c && c >= 0 && c <= myDB->AcousticWalls.size()){
 			if(c==0){break;}
 			if(myAcousticWalls.size() == 0){
@@ -348,7 +355,7 @@ void Room::acousticMaterialLister() {
 	//Plafon
 	while(true){
 		clr();
-		cout << "Lehetséges akusztikai elemek:" << endl << endl;
+		cout << "Lehetseges akusztikai elemek:" << endl << endl;
 		cout << "Plafon:" << endl;
 		for(int i = 0;i < myDB->AcousticCeilings.size();i++){
 			cout << i+1 << ".) " << myDB->AcousticCeilings[i].Name;
@@ -367,8 +374,8 @@ void Room::acousticMaterialLister() {
 				cout << endl;
 			}
 		}
-		cout << "0.) Tovább" << endl;
-		cout << "Választott: ";
+		cout << "0.) Tovabb" << endl;
+		cout << "Valasztott: ";
 		if(cin>>c && c >= 0 && c <= myDB->AcousticCeilings.size()){
 			if(c==0){break;}
 			if(myAcousticCeilings.size() == 0){
@@ -394,7 +401,7 @@ void Room::acousticMaterialLister() {
 void Room::getT() {
 	clr();
 	float temp;
-	cout << "Utózengési idő: ";
+	cout << "Utozengesi ido: ";
 	if(cin >> temp && temp > 0) {
 		T = temp;
 	} else {
@@ -403,16 +410,16 @@ void Room::getT() {
 }
 
 void Room::printResults() {
-	cout << "Eredmények: " << endl << endl;
+	cout << "Eredmenyek: " << endl << endl;
 	for(int i = 0;i < 5;i++) {
 		cout << i+1 << ".) " << (Bests[i].Ts[0]+Bests[i].Ts[1]+Bests[i].Ts[2]+Bests[i].Ts[3]+Bests[i].Ts[4]+Bests[i].Ts[5]+Bests[i].Ts[6])/7 << "   (" << Bests[i].Ts[0] << " " << Bests[i].Ts[1] << " " << Bests[i].Ts[2] << " " << Bests[i].Ts[3] << " " << Bests[i].Ts[4] << " " << Bests[i].Ts[5] << " " << Bests[i].Ts[6]  << ")" << endl; 
 	}
 	cout << endl;
-	cout << "Választott: ";
+	cout << "Valasztott: ";
 	int k;
 	if(cin >> k && k >= 0 && k <= 5) {
 		clr();
-		cout << "Padló:" << endl;
+		cout << "Padlo:" << endl;
 		for(int f = 0;f < Bests[k-1].Floor.size();f++) {
 			if(Bests[k-1].FloorSurf[f] >= 0.1){
 				cout << Bests[k-1].Floor[f]->Name << " " << Bests[k-1].FloorSurf[f] << "m^2" << endl;
